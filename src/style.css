@@ -1,0 +1,16 @@
+@import 'primeicons/primeicons.css';
+@import 'primeflex/primeflex.css';
+
+/* إصلاح dark mode */
+html {
+  background-color: var(--p-surface-0);
+  color: var(--p-text-color);
+}
+
+* {
+  touch-action: manipulation;
+} 
+
+body {
+  margin: 0 !important;
+}

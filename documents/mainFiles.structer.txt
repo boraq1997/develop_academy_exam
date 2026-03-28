@@ -1,0 +1,36 @@
+src/
+├── app/                      # "محرك" التطبيق والإعدادات المركزية
+│   ├── directives/           # Directives مخصصة (مثل v-permission للتحقق من الصلاحيات)
+│   ├── guards/               # حراس المسارات (مثل auth.guard.ts للتحقق من Sanctum Token)
+│   ├── plugins/              # إعدادات المكتبات الخارجية (PrimeVue, Axios, I18n)
+│   ├── router/               # ملف الراوتر الأساسي (index.ts) الذي يجمع مسارات الموديولات
+│   └── store/                # Pinia Stores المركزية (مثل auth.store.ts, app.store.ts)
+│
+├── components/               # المكونات العامة والمشتركة (Shared UI)
+│   ├── layout/               # مكونات الهيكل (AppTopbar.vue, AppSidebar.vue, AppFooter.vue)
+│   ├── common/               # مكونات UI بسيطة (CustomButton.vue, StatusBadge.vue)
+│   └── forms/                # مكونات النماذج المشتركة (InputWrapper.vue, FileUploadZone.vue)
+│
+├── composables/              # Logic قابل لإعادة الاستخدام (Composition API)
+│   ├── useApi.ts             # التعامل مع حالات التحميل (Loading) والأخطاء من Axios
+│   ├── useConfirm.ts         # تبسيط التعامل مع PrimeVue ConfirmDialog
+│   └── usePermissions.ts     # منطق التحقق من الصلاحيات بناءً على بيانات الباك إند
+│
+├── modules/                  # (سيتم تفصيله لاحقاً - يحتوي على منطق الأعمال)
+│
+├── service/                  # الخدمات العامة والأساسية (Core Services)
+│   ├── api.ts                # إعداد Axios Instance (Base URL, Interceptors للـ Token)
+│   ├── auth.service.ts       # خدمات تسجيل الدخول والخروج وجلب بيانات المستخدم
+│   └── storage.service.ts    # إدارة LocalStorage أو Cookies بشكل آمن
+│
+├── types/                    # التعريفات العامة (TypeScript Interfaces/Types)
+│   ├── api.d.ts              # تعريف شكل الرد من الباك إند (ApiResponse, Pagination)
+│   ├── auth.d.ts             # تعريف الـ User والـ Permissions والـ Roles
+│   └── common.d.ts           # أنواع عامة (SelectOption, QueryParams)
+│
+├── assets/                   # الملفات الثابتة (Images, Icons, Styles)
+│   ├── layout/               # صور وتنسيقات خاصة بالهيكل العام
+│   └── styles/               # ملفات CSS/SCSS العامة (Variables, Overrides)
+│
+├── App.vue                   # المكون الرئيسي للتطبيق
+└── main.ts                   # نقطة الانطلاق (Entry Point)
