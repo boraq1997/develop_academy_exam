@@ -4,7 +4,7 @@
  */
 
 import api from './api';
-import type { ApiResponse, LoginResponse, User } from '@/types/api'; // Adjust path as needed
+import type { ApiResponse, LoginResponse, User } from '../types/api'; // Adjust path as needed
 
 export class AuthService {
     /**

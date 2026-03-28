@@ -1,59 +1,37 @@
-import { createApp } from 'vue'
-import { definePreset } from '@primeuix/themes'
-import App from './App.vue'
+/**
+ * src/main.ts
+ * The entry point for the Vue 3 application.
+ * Configures PrimeVue, FontAwesome, global styles, and mounts the root component.
+ */
 
-import PrimeVue from 'primevue/config';
-import Aura from '@primeuix/themes/aura';
-import ToastService from 'primevue/toastservice';
-import Toast from 'primevue/toast';
-import ConfirmationService from 'primevue/confirmationservice';
-import Ripple from 'primevue/ripple';
-import Tooltip from 'primevue/tooltip';
+import { createApp } from 'vue';
+import App from './App.vue';
 
-import './style.css';
+// Import global styles
+import './assets/styles/main.css';
+
+// Import plugin setups
+import { setupPrimeVue } from './app/plugins/primevue';
+import { setupFontAwesome } from './app/plugins/fontawesome';
+
+// Import router
+import router from './app/router';
+
+// Import Pinia
+import { createPinia } from 'pinia';
+
 const app = createApp(App);
 
-const MyPreset = definePreset(Aura, {
-    semantic: {
-    // اللون الأساسي للنظام
-    primary: {
-        50: '{orange.50}',
-        100: '{orange.100}',
-        200: '{orange.200}',
-        300: '{orange.300}',
-        400: '{orange.400}',
-        500: '{orange.500}',
-        600: '{orange.600}',
-        700: '{orange.700}',
-        800: '{orange.800}',
-        900: '{orange.900}',
-        950: '{orange.950}'
-        },
-    }
-});
+// Setup PrimeVue
+setupPrimeVue(app);
 
-app.use(PrimeVue, {
-    ripple: true,
-    rtl: true,
-    theme: {
-        preset: MyPreset,
-        options: {
-            darkModeSelector: '.dark-mode',
-        }
-    },
-});
+// Setup FontAwesome
+setupFontAwesome(app);
 
-app.use(ToastService);
-app.directive('tooltip', Tooltip);
-// Register the Toast component globally
-app.component('Toast', Toast);
+// Use router
+app.use(router);
 
-// Register the ConfirmationService for confirmation dialogs
-app.use(ConfirmationService);
+// Use Pinia
+app.use(createPinia());
 
-// Register the Ripple directive for adding ripple effects to interactive elements
-app.directive('ripple', Ripple);
-
-
-app.use(PrimeVue);
 app.mount('#app');
