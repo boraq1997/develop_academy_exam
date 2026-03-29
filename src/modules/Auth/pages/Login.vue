@@ -98,6 +98,12 @@ const handleLogin = async () => {
   try {
     await authStore.login(credentials.value);
     router.push('/'); // Redirect to dashboard or home page after successful login
+    Toast.add({
+      severity: 'success',
+      summary: "رسالة نجاح",
+      detail: "تم تسجيل الدخول بنجاح",
+      life: 3000
+    })
   } catch (error: any) {
     authError.value = authStore.authError || 'فشل تسجيل الدخول. يرجى التحقق من البيانات.';
   } finally {
