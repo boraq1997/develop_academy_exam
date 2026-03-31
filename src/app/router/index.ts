@@ -1,27 +1,27 @@
 /**
  * src/app/router/index.ts
- * Main router configuration for the Vue application.
+ * ✅ Fixed: proper auth redirects, guest guard, and layout wrapping
  */
 
-import { createRouter, createWebHistory } from 'vue-router';
-import type { RouteRecordRaw } from 'vue-router';
-import { useAuthStore } from '../../modules/Auth/store/auth.store';
+import { createRouter, createWebHistory } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { useAuthStore } from '../../modules/Auth/store/auth.store'
 
-// Auth Module Routes (no layout)
+// ─── Auth Routes (بدون Layout) ────────────────────────────────────────────────
 const authRoutes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'Login',
     component: () => import('../../modules/Auth/pages/Login.vue'),
-    meta: { guest: true },
+    meta: { guest: true, title: 'تسجيل الدخول' },
   },
-];
+]
 
-// Main Application Routes (wrapped inside AppLayout)
+// ─── App Routes (داخل AppLayout) ──────────────────────────────────────────────
 const appRoutes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    component: () => import('../../components/layout/AppLayout.vue'), // 👈 Layout wrapper
+    component: () => import('../../components/layout/AppLayout.vue'),
     meta: { requiresAuth: true },
     children: [
       {
@@ -33,13 +33,13 @@ const appRoutes: Array<RouteRecordRaw> = [
       {
         path: 'exams',
         name: 'Exams',
-        component: () => import('../../views/Home.vue'), // replace with real component later
+        component: () => import('../../views/Home.vue'),
         meta: { requiresAuth: true, title: 'الاختبارات' },
       },
       {
         path: 'questions',
         name: 'Questions',
-        component: () => import('../../views/Home.vue'), // replace with real component later
+        component: () => import('../../views/Home.vue'),
         meta: { requiresAuth: true, title: 'بنك الأسئلة' },
       },
       {
@@ -80,7 +80,7 @@ const appRoutes: Array<RouteRecordRaw> = [
       },
     ],
   },
-];
+]
 
 const routes: Array<RouteRecordRaw> = [
   ...authRoutes,
@@ -90,34 +90,43 @@ const routes: Array<RouteRecordRaw> = [
     name: 'NotFound',
     component: () => import('../../others/NotFound.vue'),
   },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
-router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore();
+// ─── Navigation Guard ──────────────────────────────────────────────────────────
+router.beforeEach(async (to, _from, next) => {
+  const authStore = useAuthStore()
 
+  // ✅ إذا كان هناك توكن محفوظ لكن لم يُجلب المستخدم بعد — نجلبه أولاً
   if (authStore.token && !authStore.user) {
     try {
-      await authStore.fetchUser();
-    } catch (error) {
-      authStore.logout();
-      return next({ name: 'Login' });
+      await authStore.fetchUser()
+    } catch {
+      // فشل جلب المستخدم = توكن منتهي أو غير صالح
+      await authStore.logout()
+      // ✅ توجيه لـ Login فقط إذا كانت الصفحة تتطلب مصادقة
+      if (to.meta.requiresAuth) {
+        return next({ name: 'Login' })
+      }
+      return next()
     }
   }
 
+  // ✅ صفحة تتطلب مصادقة والمستخدم غير مسجّل → Login
   if (to.meta.requiresAuth && !authStore.isLoggedIn) {
-    return next({ name: 'Login' });
+    return next({ name: 'Login' })
   }
 
+  // ✅ صفحة للضيوف فقط (مثل /login) والمستخدم مسجّل → Home
   if (to.meta.guest && authStore.isLoggedIn) {
-    return next({ name: 'Home' });
+    return next({ name: 'Home' })
   }
 
-  next();
-});
+  next()
+})
 
-export default router;
+export default router

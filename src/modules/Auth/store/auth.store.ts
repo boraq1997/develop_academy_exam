@@ -1,34 +1,39 @@
-import { defineStore } from 'pinia'
-import {AuthService} from '../../../services/auth.service'
+/**
+ * src/modules/Auth/store/auth.store.ts
+ * Pinia store for authentication state management.
+ * ✅ Fixed: unified token key, correct error property, proper logout flow
+ */
 
-interface User {
-  id: number
-  name: string
-  email: string
-}
+import { defineStore } from 'pinia'
+import { AuthService } from '../../../services/auth.service'
+import type { User } from '../../../types/api'
+
+// ✅ مفتاح واحد موحّد للتوكن
+const TOKEN_KEY = 'sanctum_token'
 
 interface AuthState {
   user: User | null
   token: string | null
   loading: boolean
-  error: string | null
+  error: string | null  // ✅ كان authError في بعض الأماكن - موحّد الآن
 }
 
 export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
-    token: localStorage.getItem('auth_token'),
+    token: localStorage.getItem(TOKEN_KEY),
     loading: false,
     error: null,
   }),
 
   getters: {
-    isLoggedIn: (state) => !!state.token && !!state.user,
+    isLoggedIn: (state): boolean => !!state.token && !!state.user,
+    authError: (state): string | null => state.error, // ✅ alias للتوافق
   },
 
   actions: {
     // 🔐 Login
-    async login(credentials: { email: string; password: string }) {
+    async login(credentials: { email: string; password: string }): Promise<void> {
       this.loading = true
       this.error = null
 
@@ -36,21 +41,26 @@ export const useAuthStore = defineStore('auth', {
         const response = await AuthService.login(credentials)
 
         this.token = response.token
-        localStorage.setItem('auth_token', response.token)
+        localStorage.setItem(TOKEN_KEY, response.token)
 
-        await this.fetchUser()
+        // ✅ تعيين المستخدم مباشرة من استجابة الـ login إن وُجد
+        if (response.user) {
+          this.user = response.user
+        } else {
+          await this.fetchUser()
+        }
       } catch (err: any) {
-        this.error = err?.message || 'Login failed'
+        this.error = err?.response?.data?.message || err?.message || 'فشل تسجيل الدخول'
         throw err
       } finally {
         this.loading = false
       }
     },
 
-    // 👤 Fetch user (التحقق الحقيقي من السيرفر)
-    async fetchUser() {
+    // 👤 جلب بيانات المستخدم من الباك إند
+    async fetchUser(): Promise<void> {
       if (!this.token) {
-        await this.logout()
+        this.logout()
         return
       }
 
@@ -59,34 +69,37 @@ export const useAuthStore = defineStore('auth', {
       try {
         const user = await AuthService.getUser()
         this.user = user
-      } catch (err) {
-        await this.logout()
+      } catch {
+        this.logout()
       } finally {
         this.loading = false
       }
     },
 
-    // 🚀 تهيئة النظام عند فتح التطبيق
-    async initializeAuth() {
-      if (!this.token) {
-        await this.logout()
-        return
-      }
+    // 🚀 تهيئة عند فتح التطبيق
+    async initializeAuth(): Promise<void> {
+      if (!this.token) return
+      await this.fetchUser()
+    },
 
+    // 🚪 Logout - ✅ مزامنة مع الباك إند
+    async logout(): Promise<void> {
       try {
-        await this.fetchUser()
+        if (this.token) {
+          await AuthService.logout()
+        }
       } catch {
-        await this.logout()
+        // تجاهل أخطاء الـ logout من الباك إند
+      } finally {
+        this.user = null
+        this.token = null
+        this.error = null
+        localStorage.removeItem(TOKEN_KEY)
       }
     },
 
-    // 🚪 Logout
-    async logout() {
-      this.user = null
-      this.token = null
+    clearError(): void {
       this.error = null
-
-      localStorage.removeItem('auth_token')
     },
   },
 })

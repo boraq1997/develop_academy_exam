@@ -26,34 +26,34 @@ import Badge  from 'primevue/badge';
 import Tooltip from 'primevue/tooltip';
 
 const MyTheme = definePreset(Aura, {
-    semantic: {
-        primary: {
-        50: '#fff8d1',
-        100: '#ffeaa3',
-        200: '#f8d96a',
-        300: '#f0c83a',
-        400: '#e6b800',
-        500: '#DAA112',
-        600: '#b3860e',
-        700: '#8c6a0b',
-        800: '#665007',
-        900: '#403204'
-        },
+  semantic: {
+    primary: {
+      50: '#e6f7f5',
+      100: '#ccefeb',
+      200: '#99dfd7',
+      300: '#66cfc3',
+      400: '#33bfaf',
+      500: '#1FAF9F',
+      600: '#1a8f82',
+      700: '#146f65',
+      800: '#0f5048',
+      900: '#09302b'
+    },
 
-        secondary: {
-        500: '#809276'
-        },
+    secondary: {
+      500: '#5DADE2' // سماوي هادئ
+    },
 
-        highlight: {
-        background: '#666E51',
-        focusBackground: '#666E51',
-        color: '#ffffff'
-        },
+    highlight: {
+      background: '#2E8B57', // أخضر متوسط
+      focusBackground: '#3CB371',
+      color: '#ffffff'
+    },
 
-        surface: {
-        900: '#10383A'
-        }
+    surface: {
+      900: '#0B2E2F' // خلفية داكنة مائلة للأخضر المزرق
     }
+  }
 })
 
 export function setupPrimeVue(app: any) {

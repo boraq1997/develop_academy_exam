@@ -5,25 +5,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
-import { useRouter } from 'vue-router'; // Corrected import
-import { useAuthStore } from './modules/Auth/store/auth.store'; // Corrected import
+import { onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from './modules/Auth/store/auth.store'
 
-const authStore = useAuthStore();
-const router = useRouter();
+const authStore = useAuthStore()
+const router = useRouter()
 
 onMounted(async () => {
+  // ✅ إذا كان هناك توكن لكن لم يُجلب المستخدم بعد — نجلبه
+  // (حالة إعادة تحميل الصفحة)
   if (authStore.token && !authStore.user) {
     try {
-      await authStore.fetchUser();
-    } catch (error) {
-      console.error('Failed to re-authenticate on app load:', error);
-      router.push({ name: 'Login' });
+      await authStore.fetchUser()
+    } catch {
+      // fetchUser تقوم بـ logout تلقائياً عند الفشل
+      router.push({ name: 'Login' })
     }
   }
-});
+})
 </script>
-
-<style>
-/* Global styles can go here or be imported from src/assets/styles/main.css */
-</style>
