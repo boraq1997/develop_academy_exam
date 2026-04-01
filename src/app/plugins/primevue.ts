@@ -24,6 +24,11 @@ import Avatar from 'primevue/avatar';
 import Menu   from 'primevue/menu';
 import Badge  from 'primevue/badge';
 import Tooltip from 'primevue/tooltip';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import ColumnGroup from 'primevue/columngroup';   // optional
+import Row from 'primevue/row';                   // optional
+import Tag from 'primevue/tag';
 
 const MyTheme = definePreset(Aura, {
   semantic: {
@@ -84,4 +89,9 @@ export function setupPrimeVue(app: any) {
     app.component('Avatar', Avatar);
     app.component('Menu', Menu);
     app.component('Badge', Badge);
+    app.component('DataTable', DataTable);
+    app.component('Column', Column);
+    app.component('ColumnGroup', ColumnGroup);
+    app.component('Row', Row);
+    app.component('Tag', Tag);
 }

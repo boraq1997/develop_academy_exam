@@ -4,7 +4,7 @@
 // ============================================================
 
 import type { Timestamps } from '../../../../shared/shared.types'
-import type { TypeUser, UserInformation } from '../../Permissions/types/permissions.types'
+import type { TypeUser, UserInformation } from '../../Permissions/types/roles.types'
 
 // ============================================================
 // Stage & Subject (minimal, to avoid circular imports)

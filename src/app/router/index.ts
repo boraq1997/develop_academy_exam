@@ -57,13 +57,13 @@ const appRoutes: Array<RouteRecordRaw> = [
       {
         path: 'users',
         name: 'Users',
-        component: () => import('../../views/Home.vue'),
+        component: () => import('../../modules/Dashboard/Users/pages/UsersListPage.vue'),
         meta: { requiresAuth: true, title: 'المستخدمون' },
       },
       {
         path: 'roles',
-        name: 'Roles',
-        component: () => import('../../views/Home.vue'),
+        name: 'RolesIndex',
+        component: () => import('../../modules/Dashboard/Permissions/pages/RolesIndexPage.vue'),
         meta: { requiresAuth: true, title: 'الصلاحيات' },
       },
       {

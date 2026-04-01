@@ -1,31 +1,24 @@
 // ============================================================
-// modules/Dashboard/Permissions/types/permissions.types.ts
-// Types وحدة الصلاحيات (TypeUsers & Roles)
+// modules/Dashboard/Permissions/types/type-user.types.ts
+// Types وحدة أنواع المستخدمين (TypeUser)
 // ============================================================
 
 import type { Timestamps } from '../../../../shared/shared.types'
+import type { Role } from './roles.types'
 
 // ============================================================
-// Role
+// User Information (embedded in TypeUser show response)
 // ============================================================
 
-export interface RolePivot {
-    type_user_id: number
-    role_id: number
-    permission_role: string[]
-}
-
-export interface Role extends Timestamps {
+export interface UserInformation extends Timestamps {
     id: number
-    name: string
-    show_name: string | null
-    description: string | null
-    permissions: string[]
-    pivot?: RolePivot
+    user_id: number
+    stage_id: number | null
+    data: Record<string, unknown> | null
 }
 
 // ============================================================
-// TypeUser
+// TypeUser (basic – used in lists)
 // ============================================================
 
 export interface TypeUser extends Timestamps {
@@ -37,24 +30,32 @@ export interface TypeUser extends Timestamps {
 }
 
 // ============================================================
-// UserInformation (used by Users module)
+// TypeUser (detailed – GET /typeusers/{id})
+// Includes paginated users list
 // ============================================================
 
-export interface UserInformation extends Timestamps {
+export interface TypeUserDetail extends TypeUser {
+    users?: TypeUserUser[]
+}
+
+export interface TypeUserUser {
     id: number
-    user_id: number
-    stage_id: number | null
-    data: Record<string, unknown> | null
+    name: string
+    email: string
 }
 
 // ============================================================
-// Store TypeUser  –  POST /typeusers
+// Role Permission Input  –  used in store & update payloads
 // ============================================================
 
 export interface RolePermissionInput {
     id: number
     permissions: string[]
 }
+
+// ============================================================
+// Store TypeUser  –  POST /typeusers
+// ============================================================
 
 export interface StoreTypeUserPayload {
     name: string
@@ -75,7 +76,9 @@ export interface UpdateTypeUserPayload {
 }
 
 // ============================================================
-// Permissions Map
+// Query / Filters
 // ============================================================
 
-export type PermissionsMap = Record<string, string[]>
+export interface TypeUserIndexFilter {
+    page?: number
+}
