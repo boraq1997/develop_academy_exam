@@ -12,7 +12,7 @@ export interface ApiResponse<T = any> {
 }
 
 // Pagination meta data (common in Laravel API responses)
-export interface PaginationMeta {
+export interface PaginationData {
   current_page: number;
   from: number;
   last_page: number;
