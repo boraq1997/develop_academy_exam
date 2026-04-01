@@ -1,6 +1,6 @@
 /**
  * src/app/router/index.ts
- * ✅ Fixed: proper auth redirects, guest guard, and layout wrapping
+ * ✅ Fixed: مع جميع مسارات المستخدمين والترتيب الصحيح
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
@@ -24,6 +24,9 @@ const appRoutes: Array<RouteRecordRaw> = [
     component: () => import('../../components/layout/AppLayout.vue'),
     meta: { requiresAuth: true },
     children: [
+      // ════════════════════════════════════════════════════════════════════════
+      // 📍 PAGES
+      // ════════════════════════════════════════════════════════════════════════
       {
         path: '',
         name: 'Home',
@@ -55,18 +58,6 @@ const appRoutes: Array<RouteRecordRaw> = [
         meta: { requiresAuth: true, title: 'التقارير' },
       },
       {
-        path: 'users',
-        name: 'Users',
-        component: () => import('../../modules/Dashboard/Users/pages/UsersListPage.vue'),
-        meta: { requiresAuth: true, title: 'المستخدمون' },
-      },
-      {
-        path: 'roles',
-        name: 'RolesIndex',
-        component: () => import('../../modules/Dashboard/Permissions/pages/RolesIndexPage.vue'),
-        meta: { requiresAuth: true, title: 'الصلاحيات' },
-      },
-      {
         path: 'settings',
         name: 'Settings',
         component: () => import('../../views/Home.vue'),
@@ -77,6 +68,44 @@ const appRoutes: Array<RouteRecordRaw> = [
         name: 'Profile',
         component: () => import('../../views/Home.vue'),
         meta: { requiresAuth: true, title: 'الملف الشخصي' },
+      },
+
+      // ════════════════════════════════════════════════════════════════════════
+      // 👥 USERS ROUTES
+      // ════════════════════════════════════════════════════════════════════════
+      {
+        path: 'users',
+        name: 'Users',
+        component: () => import('../../modules/Dashboard/Users/pages/UsersListPage.vue'),
+        meta: { requiresAuth: true, title: 'المستخدمون' },
+      },
+      {
+        path: 'users/create',
+        name: 'users.create',
+        component: () => import('../../modules/Dashboard/Users/pages/UserCreatePage.vue'),
+        meta: { requiresAuth: true, title: 'إضافة مستخدم' },
+      },
+      {
+        path: 'users/:id',
+        name: 'users.show',
+        component: () => import('../../modules/Dashboard/Users/pages/UserShowPage.vue'),
+        meta: { requiresAuth: true, title: 'عرض مستخدم' },
+      },
+      {
+        path: 'users/:id/edit',
+        name: 'users.edit',
+        component: () => import('../../modules/Dashboard/Users/pages/UserEditPage.vue'),
+        meta: { requiresAuth: true, title: 'تعديل مستخدم' },
+      },
+
+      // ════════════════════════════════════════════════════════════════════════
+      // 🔐 ROLES & PERMISSIONS ROUTES
+      // ════════════════════════════════════════════════════════════════════════
+      {
+        path: 'roles',
+        name: 'RolesIndex',
+        component: () => import('../../modules/Dashboard/Permissions/pages/RolesIndexPage.vue'),
+        meta: { requiresAuth: true, title: 'الصلاحيات' },
       },
     ],
   },
